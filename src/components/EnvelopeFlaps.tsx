@@ -11,10 +11,10 @@ export const EnvelopeFlaps: React.FC<EnvelopeFlapsProps> = ({ isRevealed, onOpen
     <>
       {/* LOWER FLAP (Envelope Tail) */}
       <motion.div
-        className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none w-full flex flex-col justify-end"
+        className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none w-full flex flex-col justify-end"
         initial={{ y: '0%' }}
         animate={{
-          y: isRevealed ? '76%' : '0%',
+          y: isRevealed ? '92%' : '0%',
         }}
         transition={{
           duration: 1.1,
@@ -28,26 +28,15 @@ export const EnvelopeFlaps: React.FC<EnvelopeFlapsProps> = ({ isRevealed, onOpen
             className="w-full h-auto object-cover block select-none pointer-events-none drop-shadow-2xl"
             loading="eager"
           />
-
-          {/* Stamp top arc peeking when revealed */}
-          {isRevealed && (
-            <div className="absolute top-[34%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none opacity-90">
-              <img
-                src="/Stamp.png"
-                alt="Stamp peek"
-                className="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-xl"
-              />
-            </div>
-          )}
         </div>
       </motion.div>
 
       {/* UPPER FLAP (Envelope Head) */}
       <motion.div
-        className="absolute top-0 left-0 right-0 z-30 w-full"
+        className="absolute top-0 left-0 right-0 z-30 w-full pointer-events-none"
         initial={{ y: '0%' }}
         animate={{
-          y: isRevealed ? '-75%' : '0%',
+          y: isRevealed ? '-85%' : '0%',
         }}
         transition={{
           duration: 1.1,
@@ -62,9 +51,9 @@ export const EnvelopeFlaps: React.FC<EnvelopeFlapsProps> = ({ isRevealed, onOpen
             loading="eager"
           />
 
-          {/* Stamp placed at the apex of the Upper Flap (below LUC COSSI) */}
+          {/* Stamp button placed at the apex of the Upper Flap (visible ONLY when closed) */}
           {!isRevealed && (
-            <div className="absolute bottom-[2%] left-1/2 -translate-x-1/2 translate-y-[35%] z-50 flex flex-col items-center">
+            <div className="absolute bottom-[2%] left-1/2 -translate-x-1/2 translate-y-[35%] z-50 flex flex-col items-center pointer-events-auto">
               <motion.button
                 onClick={onOpen}
                 whileHover={{ scale: 1.08 }}
