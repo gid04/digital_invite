@@ -56,10 +56,10 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack }) => {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95, y: -15 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="w-full flex-1 flex flex-col items-center justify-between px-5 pt-14 pb-5 z-30 overflow-y-auto no-scrollbar"
+      className="w-full h-full flex flex-col items-center justify-between px-5 pt-20 pb-5 z-20 overflow-y-auto no-scrollbar"
     >
       {/* RSVP Card Container matching Invitees form.png */}
-      <div className="w-full max-w-[340px] bg-[#ebe3d5] rounded-[30px] p-6 pt-5 shadow-card border border-[#dfd4c0]/50 relative">
+      <div className="w-full max-w-[340px] bg-[#ebe3d5] rounded-[30px] p-6 pt-5 shadow-card border border-[#dfd4c0]/50 relative z-30">
         {/* Title: Départ à la Retraite in emerald green */}
         <div className="w-full flex justify-center mb-5">
           <div className="w-56 max-w-[80%] flex justify-center">
@@ -195,7 +195,7 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack }) => {
       </div>
 
       {/* Footer */}
-      <p className="text-[11px] text-[#8eab94] font-light tracking-wider uppercase mt-4 select-none">
+      <p className="text-[11px] text-[#8eab94] font-light tracking-[0.2em] uppercase mt-3.5 select-none z-30">
         by VANTAR STUDIOS
       </p>
     </motion.div>
