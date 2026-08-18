@@ -62,12 +62,12 @@ export const EnvelopeFlaps: React.FC<EnvelopeFlapsProps> = ({ isRevealed, onOpen
                 aria-label="Cliquez ici pour ouvrir l'invitation"
               >
                 {/* Pulsing ambient glow aura */}
-                <div className="absolute -inset-2.5 bg-emerald-400/30 rounded-full blur-md animate-pulse pointer-events-none" />
+                <div className="absolute -inset-3.5 bg-emerald-400/35 rounded-full blur-lg animate-pulse pointer-events-none" />
 
                 <img
                   src="/Stamp.png"
                   alt="Cliquez ici"
-                  className="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-2xl transition-transform duration-300 group-hover:rotate-3 select-none"
+                  className="w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-2xl transition-transform duration-300 group-hover:rotate-3 select-none"
                   loading="eager"
                 />
               </motion.button>
