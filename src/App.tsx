@@ -1,15 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { MobileFrame } from './components/MobileFrame';
 import { EnvelopeFlaps } from './components/EnvelopeFlaps';
 import { InvitationCard } from './components/InvitationCard';
 import { RSVPForm } from './components/RSVPForm';
 import { ThankYouCard } from './components/ThankYouCard';
+import { AdminView } from './components/AdminView';
 
 type AppStep = 'closed' | 'revealed' | 'form' | 'thank_you';
 
 export function App() {
+  const [currentPath, setCurrentPath] = useState(() => window.location.pathname);
   const [step, setStep] = useState<AppStep>('closed');
+
+  // Synchronize browser URL changes (e.g. Back button or direct URL)
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setCurrentPath(window.location.pathname);
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    return () => window.removeEventListener('popstate', handleLocationChange);
+  }, []);
+
+  const navigateTo = (path: string) => {
+    window.history.pushState({}, '', path);
+    setCurrentPath(path);
+  };
+
+  // Admin View check
+  if (currentPath === '/admin' || currentPath === '/admin/') {
+    return <AdminView onGoToCard={() => navigateTo('/')} />;
+  }
 
   const handleOpenEnvelope = () => {
     setStep('revealed');
