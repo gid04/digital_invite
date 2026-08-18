@@ -9,34 +9,12 @@ interface EnvelopeFlapsProps {
 export const EnvelopeFlaps: React.FC<EnvelopeFlapsProps> = ({ isRevealed, onOpen }) => {
   return (
     <>
-      {/* UPPER FLAP (Envelope Head) */}
-      <motion.div
-        className="absolute top-0 left-0 right-0 z-30 pointer-events-none w-full"
-        initial={{ y: '0%' }}
-        animate={{
-          y: isRevealed ? '-73%' : '0%',
-        }}
-        transition={{
-          duration: 1.1,
-          ease: [0.22, 1, 0.36, 1], // Smooth cubic ease for natural physical motion
-        }}
-      >
-        <div className="relative w-full">
-          <img
-            src="/upper flap.png"
-            alt="Enveloppe - Haut"
-            className="w-full h-auto object-cover block select-none pointer-events-none drop-shadow-2xl"
-            loading="eager"
-          />
-        </div>
-      </motion.div>
-
       {/* LOWER FLAP (Envelope Tail) */}
       <motion.div
-        className="absolute bottom-0 left-0 right-0 z-30 pointer-events-none w-full flex flex-col justify-end"
+        className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none w-full flex flex-col justify-end"
         initial={{ y: '0%' }}
         animate={{
-          y: isRevealed ? '74%' : '0%',
+          y: isRevealed ? '76%' : '0%',
         }}
         transition={{
           duration: 1.1,
@@ -51,41 +29,72 @@ export const EnvelopeFlaps: React.FC<EnvelopeFlapsProps> = ({ isRevealed, onOpen
             loading="eager"
           />
 
-          {/* Stamp placed over the seam on the lower flap */}
-          <div className="absolute top-[8%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 flex flex-col items-center">
-            <motion.button
-              onClick={!isRevealed ? onOpen : undefined}
-              whileHover={!isRevealed ? { scale: 1.08 } : {}}
-              whileTap={!isRevealed ? { scale: 0.94 } : {}}
-              className={`relative group focus:outline-none ${
-                !isRevealed ? 'pointer-events-auto cursor-pointer' : 'pointer-events-none'
-              }`}
-              aria-label="Cliquez ici pour ouvrir l'invitation"
-            >
-              {/* Pulsing ambient glow when closed */}
-              {!isRevealed && (
-                <div className="absolute -inset-2.5 bg-emerald-400/25 rounded-full blur-md animate-pulse pointer-events-none" />
-              )}
-
+          {/* Stamp top arc peeking when revealed */}
+          {isRevealed && (
+            <div className="absolute top-[34%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none opacity-90">
               <img
                 src="/Stamp.png"
-                alt="Cliquez ici"
-                className="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-xl select-none"
-                loading="eager"
+                alt="Stamp peek"
+                className="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-xl"
               />
-            </motion.button>
-          </div>
-
-          {/* "by VANTAR STUDIOS" on bottom of envelope when closed */}
-          {!isRevealed && (
-            <div className="absolute bottom-6 left-0 right-0 flex justify-center z-40 pointer-events-none">
-              <p className="text-[11px] text-[#8eab94] font-light tracking-[0.2em] uppercase select-none">
-                by VANTAR STUDIOS
-              </p>
             </div>
           )}
         </div>
       </motion.div>
+
+      {/* UPPER FLAP (Envelope Head) */}
+      <motion.div
+        className="absolute top-0 left-0 right-0 z-30 w-full"
+        initial={{ y: '0%' }}
+        animate={{
+          y: isRevealed ? '-75%' : '0%',
+        }}
+        transition={{
+          duration: 1.1,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+      >
+        <div className="relative w-full">
+          <img
+            src="/upper flap.png"
+            alt="Enveloppe - Haut"
+            className="w-full h-auto object-cover block select-none pointer-events-none drop-shadow-2xl"
+            loading="eager"
+          />
+
+          {/* Stamp placed at the apex of the Upper Flap (below LUC COSSI) */}
+          {!isRevealed && (
+            <div className="absolute bottom-[2%] left-1/2 -translate-x-1/2 translate-y-[35%] z-50 flex flex-col items-center">
+              <motion.button
+                onClick={onOpen}
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.94 }}
+                className="relative group cursor-pointer focus:outline-none"
+                aria-label="Cliquez ici pour ouvrir l'invitation"
+              >
+                {/* Pulsing ambient glow aura */}
+                <div className="absolute -inset-2.5 bg-emerald-400/30 rounded-full blur-md animate-pulse pointer-events-none" />
+
+                <img
+                  src="/Stamp.png"
+                  alt="Cliquez ici"
+                  className="w-24 h-24 sm:w-28 sm:h-28 object-contain drop-shadow-2xl transition-transform duration-300 group-hover:rotate-3 select-none"
+                  loading="eager"
+                />
+              </motion.button>
+            </div>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Footer "by VANTAR STUDIOS" on envelope when closed */}
+      {!isRevealed && (
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center z-30 pointer-events-none">
+          <p className="text-[11px] text-[#8eab94] font-light tracking-[0.2em] uppercase select-none">
+            by VANTAR STUDIOS
+          </p>
+        </div>
+      )}
     </>
   );
 };
