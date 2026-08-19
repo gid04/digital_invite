@@ -13,7 +13,7 @@ export function App() {
   const [currentPath, setCurrentPath] = useState(() => window.location.pathname);
   const [step, setStep] = useState<AppStep>('closed');
 
-  // Synchronize browser URL changes (e.g. Back button or direct URL)
+  // Synchronize browser URL changes (e.g. Back button or navigation)
   useEffect(() => {
     const handleLocationChange = () => {
       setCurrentPath(window.location.pathname);
@@ -28,10 +28,14 @@ export function App() {
     setCurrentPath(path);
   };
 
-  // Admin View check
+  // Admin View route check
   if (currentPath === '/admin' || currentPath === '/admin/') {
     return <AdminView onGoToCard={() => navigateTo('/')} />;
   }
+
+  // Single card route check (/single)
+  const isSingle = currentPath === '/single' || currentPath === '/single/';
+  const cardImageSrc = isSingle ? '/single-card.jpg' : '/Final 1.jpg';
 
   const handleOpenEnvelope = () => {
     setStep('revealed');
@@ -74,14 +78,16 @@ export function App() {
           <AnimatePresence mode="wait">
             {step === 'revealed' && (
               <InvitationCard
-                key="invitation-card"
+                key={`invitation-card-${isSingle ? 'single' : 'standard'}`}
+                cardImageSrc={cardImageSrc}
                 onConfirmPresence={handleConfirmPresence}
               />
             )}
 
             {step === 'form' && (
               <RSVPForm
-                key="rsvp-form"
+                key={`rsvp-form-${isSingle ? 'single' : 'standard'}`}
+                isSingle={isSingle}
                 onSuccess={handleFormSuccess}
                 onBack={() => setStep('revealed')}
               />

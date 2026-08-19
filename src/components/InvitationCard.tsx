@@ -3,9 +3,13 @@ import { motion } from 'framer-motion';
 
 interface InvitationCardProps {
   onConfirmPresence: () => void;
+  cardImageSrc?: string;
 }
 
-export const InvitationCard: React.FC<InvitationCardProps> = ({ onConfirmPresence }) => {
+export const InvitationCard: React.FC<InvitationCardProps> = ({
+  onConfirmPresence,
+  cardImageSrc = '/Final 1.jpg',
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.96 }}
@@ -17,7 +21,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ onConfirmPresenc
       {/* Main Invitation Card Container */}
       <div className="w-full max-w-[340px] relative rounded-[24px] overflow-hidden shadow-2xl border border-[#dfd4c0]/50 bg-[#f7f2ea] flex-shrink-0">
         <img
-          src="/Final 1.jpg"
+          src={cardImageSrc}
           alt="Invitation Départ à la Retraite - Ahoya Luc Cossi"
           className="w-full h-auto object-contain block rounded-[22px] pointer-events-none select-none"
           loading="eager"

@@ -7,9 +7,10 @@ import { Check, Loader2 } from 'lucide-react';
 interface RSVPFormProps {
   onSuccess: () => void;
   onBack?: () => void;
+  isSingle?: boolean;
 }
 
-export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack }) => {
+export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack, isSingle = false }) => {
   const [civility, setCivility] = useState<'M' | 'Mme'>('M');
   const [nom, setNom] = useState('');
   const [prenoms, setPrenoms] = useState('');
@@ -38,7 +39,7 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack }) => {
         civility,
         nom: nom.trim().toUpperCase(),
         prenoms: prenoms.trim(),
-        withPlusOne,
+        withPlusOne: isSingle ? false : withPlusOne,
       });
 
       setIsSubmitting(false);
@@ -134,26 +135,28 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack }) => {
             />
           </div>
 
-          {/* Checkbox: "Je viens avec M/Mme" */}
-          <div className="pt-0.5 pb-0.5">
-            <label
-              className="flex items-center gap-3 cursor-pointer select-none group"
-              onClick={() => setWithPlusOne(!withPlusOne)}
-            >
-              <div
-                className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors duration-200 border ${
-                  withPlusOne
-                    ? 'bg-[#0e4b20] border-[#0e4b20]'
-                    : 'bg-[#e3d8c8] border-[#0e4b20]/70 group-hover:border-[#0e4b20]'
-                }`}
+          {/* Checkbox: "Je viens avec M/Mme" (Only for couple/standard cards) */}
+          {!isSingle && (
+            <div className="pt-0.5 pb-0.5">
+              <label
+                className="flex items-center gap-3 cursor-pointer select-none group"
+                onClick={() => setWithPlusOne(!withPlusOne)}
               >
-                {withPlusOne && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
-              </div>
-              <span className="text-black text-xs sm:text-sm font-medium">
-                Je viens avec M/Mme
-              </span>
-            </label>
-          </div>
+                <div
+                  className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors duration-200 border ${
+                    withPlusOne
+                      ? 'bg-[#0e4b20] border-[#0e4b20]'
+                      : 'bg-[#e3d8c8] border-[#0e4b20]/70 group-hover:border-[#0e4b20]'
+                  }`}
+                >
+                  {withPlusOne && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
+                </div>
+                <span className="text-black text-xs sm:text-sm font-medium">
+                  Je viens avec M/Mme
+                </span>
+              </label>
+            </div>
+          )}
 
           {/* Error Message */}
           {errorMsg && (
