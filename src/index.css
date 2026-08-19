@@ -14,7 +14,7 @@
   }
 }
 
-/* Custom Glassmorphism styles */
+/* Custom Emerald Glassmorphism styles */
 .glass-btn {
   background: linear-gradient(135deg, rgba(16, 56, 26, 0.75) 0%, rgba(8, 36, 16, 0.85) 100%);
   backdrop-filter: blur(12px);
@@ -28,8 +28,18 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.glass-btn:active {
-  transform: scale(0.97);
+/* Custom Navy/Gold Glassmorphism styles */
+.glass-btn-navy {
+  background: linear-gradient(135deg, rgba(16, 32, 60, 0.82) 0%, rgba(9, 18, 36, 0.92) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 178, 96, 0.35);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45), inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.glass-btn-navy:hover {
+  background: linear-gradient(135deg, rgba(24, 48, 88, 0.9) 0%, rgba(14, 28, 54, 0.96) 100%);
+  border: 1px solid rgba(226, 178, 96, 0.55);
 }
 
 /* Script calligraphy font */

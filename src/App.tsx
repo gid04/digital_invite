@@ -28,14 +28,31 @@ export function App() {
     setCurrentPath(path);
   };
 
-  // Admin View route check
+  // Admin View route check (/admin)
   if (currentPath === '/admin' || currentPath === '/admin/') {
     return <AdminView onGoToCard={() => navigateTo('/')} />;
   }
 
-  // Single card route check (/single)
+  // Route configurations
+  const isSample = currentPath === '/sample' || currentPath === '/sample/';
   const isSingle = currentPath === '/single' || currentPath === '/single/';
-  const cardImageSrc = isSingle ? '/single-card.jpg' : '/Final 1.jpg';
+
+  // Theme & asset configs
+  const bgImageSrc = isSample ? '/bg-sample.png' : '/bg.png';
+  const bgColor = isSample ? 'bg-[#0a1526]' : 'bg-[#072412]';
+  const upperFlapSrc = isSample ? '/upper-flap-sample.png' : '/upper flap.png';
+  const lowerFlapSrc = isSample ? '/lower-flap-sample.png' : '/lower flap.png';
+  const stampSrc = isSample ? '/stamp-sample.png' : '/Stamp.png';
+  const glowColorClass = isSample ? 'bg-amber-400/35' : 'bg-emerald-400/30';
+  const footerTextColor = isSample ? 'text-[#b09d7d]' : 'text-[#8eab94]';
+  const cardImageSrc = isSample
+    ? '/sample-card.jpg'
+    : isSingle
+    ? '/single-card.jpg'
+    : '/Final 1.jpg';
+  const buttonClass = isSample
+    ? 'glass-btn-navy text-[#fbeec1]'
+    : 'glass-btn text-white';
 
   const handleOpenEnvelope = () => {
     setStep('revealed');
@@ -58,10 +75,10 @@ export function App() {
   return (
     <MobileFrame>
       {/* Background container with seamless floral texture */}
-      <div className="relative w-full h-full flex flex-col overflow-hidden bg-[#072412]">
+      <div className={`relative w-full h-full flex flex-col overflow-hidden ${bgColor}`}>
         <div
           className="absolute inset-0 bg-cover bg-center opacity-90 pointer-events-none"
-          style={{ backgroundImage: 'url("/bg.png")' }}
+          style={{ backgroundImage: `url("${bgImageSrc}")` }}
         />
 
         {/* Subtle radial dark overlay for depth */}
@@ -71,6 +88,11 @@ export function App() {
         <EnvelopeFlaps
           isRevealed={isEnvelopeRevealed}
           onOpen={handleOpenEnvelope}
+          upperFlapSrc={upperFlapSrc}
+          lowerFlapSrc={lowerFlapSrc}
+          stampSrc={stampSrc}
+          glowColorClass={glowColorClass}
+          footerTextColor={footerTextColor}
         />
 
         {/* Main Content Area */}
@@ -78,15 +100,17 @@ export function App() {
           <AnimatePresence mode="wait">
             {step === 'revealed' && (
               <InvitationCard
-                key={`invitation-card-${isSingle ? 'single' : 'standard'}`}
+                key={`invitation-card-${isSample ? 'sample' : isSingle ? 'single' : 'standard'}`}
                 cardImageSrc={cardImageSrc}
+                buttonClass={buttonClass}
+                footerTextColor={footerTextColor}
                 onConfirmPresence={handleConfirmPresence}
               />
             )}
 
             {step === 'form' && (
               <RSVPForm
-                key={`rsvp-form-${isSingle ? 'single' : 'standard'}`}
+                key={`rsvp-form-${isSample ? 'sample' : isSingle ? 'single' : 'standard'}`}
                 isSingle={isSingle}
                 onSuccess={handleFormSuccess}
                 onBack={() => setStep('revealed')}

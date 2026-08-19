@@ -4,9 +4,22 @@ import { motion } from 'framer-motion';
 interface EnvelopeFlapsProps {
   isRevealed: boolean;
   onOpen: () => void;
+  upperFlapSrc?: string;
+  lowerFlapSrc?: string;
+  stampSrc?: string;
+  glowColorClass?: string;
+  footerTextColor?: string;
 }
 
-export const EnvelopeFlaps: React.FC<EnvelopeFlapsProps> = ({ isRevealed, onOpen }) => {
+export const EnvelopeFlaps: React.FC<EnvelopeFlapsProps> = ({
+  isRevealed,
+  onOpen,
+  upperFlapSrc = '/upper flap.png',
+  lowerFlapSrc = '/lower flap.png',
+  stampSrc = '/Stamp.png',
+  glowColorClass = 'bg-emerald-400/30',
+  footerTextColor = 'text-[#8eab94]',
+}) => {
   return (
     <>
       {/* LOWER FLAP (Envelope Tail) */}
@@ -23,7 +36,7 @@ export const EnvelopeFlaps: React.FC<EnvelopeFlapsProps> = ({ isRevealed, onOpen
       >
         <div className="relative w-full">
           <img
-            src="/lower flap.png"
+            src={lowerFlapSrc}
             alt="Enveloppe - Bas"
             className="w-full h-auto object-cover block select-none pointer-events-none drop-shadow-2xl"
             loading="eager"
@@ -45,7 +58,7 @@ export const EnvelopeFlaps: React.FC<EnvelopeFlapsProps> = ({ isRevealed, onOpen
       >
         <div className="relative w-full">
           <img
-            src="/upper flap.png"
+            src={upperFlapSrc}
             alt="Enveloppe - Haut"
             className="w-full h-auto object-cover block select-none pointer-events-none drop-shadow-2xl"
             loading="eager"
@@ -62,10 +75,10 @@ export const EnvelopeFlaps: React.FC<EnvelopeFlapsProps> = ({ isRevealed, onOpen
                 aria-label="Cliquez ici pour ouvrir l'invitation"
               >
                 {/* Pulsing ambient glow aura */}
-                <div className="absolute -inset-3.5 bg-emerald-400/35 rounded-full blur-lg animate-pulse pointer-events-none" />
+                <div className={`absolute -inset-3.5 ${glowColorClass} rounded-full blur-lg animate-pulse pointer-events-none`} />
 
                 <img
-                  src="/Stamp.png"
+                  src={stampSrc}
                   alt="Cliquez ici"
                   className="w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-2xl transition-transform duration-300 group-hover:rotate-3 select-none"
                   loading="eager"
@@ -79,7 +92,7 @@ export const EnvelopeFlaps: React.FC<EnvelopeFlapsProps> = ({ isRevealed, onOpen
       {/* Footer "by VANTAR STUDIOS" on envelope when closed */}
       {!isRevealed && (
         <div className="absolute bottom-6 left-0 right-0 flex justify-center z-30 pointer-events-none">
-          <p className="text-[11px] text-[#8eab94] font-light tracking-[0.2em] uppercase select-none">
+          <p className={`text-[11px] ${footerTextColor} font-light tracking-[0.2em] uppercase select-none`}>
             by VANTAR STUDIOS
           </p>
         </div>

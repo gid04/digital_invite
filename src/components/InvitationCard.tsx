@@ -4,11 +4,15 @@ import { motion } from 'framer-motion';
 interface InvitationCardProps {
   onConfirmPresence: () => void;
   cardImageSrc?: string;
+  buttonClass?: string;
+  footerTextColor?: string;
 }
 
 export const InvitationCard: React.FC<InvitationCardProps> = ({
   onConfirmPresence,
   cardImageSrc = '/Final 1.jpg',
+  buttonClass = 'glass-btn text-white',
+  footerTextColor = 'text-[#8eab94]',
 }) => {
   return (
     <motion.div
@@ -19,10 +23,10 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
       className="w-full h-full flex flex-col items-center justify-between px-4 pt-[72px] pb-4 z-20 overflow-y-auto no-scrollbar"
     >
       {/* Main Invitation Card Container */}
-      <div className="w-full max-w-[340px] relative rounded-[24px] overflow-hidden shadow-2xl border border-[#dfd4c0]/50 bg-[#f7f2ea] flex-shrink-0">
+      <div className="w-full max-w-[340px] relative rounded-[24px] overflow-hidden shadow-2xl border border-white/10 bg-[#0c1b33] flex-shrink-0">
         <img
           src={cardImageSrc}
-          alt="Invitation Départ à la Retraite - Ahoya Luc Cossi"
+          alt="Invitation Départ à la Retraite"
           className="w-full h-auto object-contain block rounded-[22px] pointer-events-none select-none"
           loading="eager"
         />
@@ -34,13 +38,13 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
           onClick={onConfirmPresence}
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
-          className="w-full py-3.5 px-6 rounded-full glass-btn text-white text-sm sm:text-base font-medium tracking-wide text-center transition-all duration-300 shadow-glass border border-white/20 active:bg-emerald-900/90 flex items-center justify-center cursor-pointer"
+          className={`w-full py-3.5 px-6 rounded-full ${buttonClass} text-sm sm:text-base font-medium tracking-wide text-center transition-all duration-300 shadow-glass border border-white/20 active:scale-95 flex items-center justify-center cursor-pointer`}
         >
           Je confirme ma présence
         </motion.button>
 
         {/* Footer */}
-        <p className="text-[11px] text-[#8eab94] font-light tracking-[0.2em] uppercase mt-3 select-none">
+        <p className={`text-[11px] ${footerTextColor} font-light tracking-[0.2em] uppercase mt-3 select-none`}>
           by VANTAR STUDIOS
         </p>
       </div>
