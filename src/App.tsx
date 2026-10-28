@@ -1,19 +1,20 @@
 import { useState, useEffect } from 'react';
-import { AnimatePresence } from 'framer-motion';
-import { MobileFrame } from './components/MobileFrame';
-import { EnvelopeFlaps } from './components/EnvelopeFlaps';
-import { InvitationCard } from './components/InvitationCard';
-import { RSVPForm } from './components/RSVPForm';
-import { ThankYouCard } from './components/ThankYouCard';
-import { AdminView } from './components/AdminView';
-
-type AppStep = 'closed' | 'revealed' | 'form' | 'thank_you';
+import { Navbar } from './components/Navbar';
+import { LandingPage } from './components/LandingPage';
+import { AuthModal } from './components/AuthModal';
+import { DashboardView } from './components/DashboardView';
+import { EventCreationWizard } from './components/EventCreationWizard';
+import { EventDashboard } from './components/EventDashboard';
+import { PublicInvitationView } from './components/PublicInvitationView';
+import type { AuthUser } from './types';
+import { getCurrentUser, signOutUser } from './lib/supabase';
 
 export function App() {
   const [currentPath, setCurrentPath] = useState(() => window.location.pathname);
-  const [step, setStep] = useState<AppStep>('closed');
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
-  // Synchronize browser URL changes (e.g. Back button or navigation)
+  // Sync route on popstate (browser back/forward)
   useEffect(() => {
     const handleLocationChange = () => {
       setCurrentPath(window.location.pathname);
@@ -23,110 +24,156 @@ export function App() {
     return () => window.removeEventListener('popstate', handleLocationChange);
   }, []);
 
+  // Check auth user session on start
+  useEffect(() => {
+    getCurrentUser().then((u) => {
+      if (u) setUser(u);
+    });
+  }, []);
+
   const navigateTo = (path: string) => {
+    // Handle anchor links on landing page
+    if (path.includes('#')) {
+      const [base, hash] = path.split('#');
+      if (base && base !== currentPath) {
+        window.history.pushState({}, '', path);
+        setCurrentPath(base);
+      }
+      setTimeout(() => {
+        const elem = document.getElementById(hash);
+        if (elem) elem.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
+      return;
+    }
+
     window.history.pushState({}, '', path);
     setCurrentPath(path);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Admin View route check (/admin)
-  if (currentPath === '/admin' || currentPath === '/admin/') {
-    return <AdminView onGoToCard={() => navigateTo('/')} />;
+  const handleSignOut = async () => {
+    await signOutUser();
+    setUser(null);
+    navigateTo('/');
+  };
+
+  // Route: Public Invitation View (/e/:eventId, /sample, /single)
+  if (currentPath.startsWith('/e/')) {
+    const eventId = currentPath.replace('/e/', '').replace(/\/$/, '');
+    return <PublicInvitationView eventId={eventId} onGoHome={() => navigateTo('/')} />;
   }
 
-  // Route configurations
-  const isSample = currentPath === '/sample' || currentPath === '/sample/';
-  const isSingle = currentPath === '/single' || currentPath === '/single/';
+  if (currentPath === '/sample' || currentPath === '/sample/') {
+    return <PublicInvitationView eventId="sample-event-demo" onGoHome={() => navigateTo('/')} />;
+  }
 
-  // Theme & asset configs
-  const bgImageSrc = isSample ? '/bg-sample.png' : '/bg.png';
-  const bgColor = isSample ? 'bg-[#0a1526]' : 'bg-[#072412]';
-  const upperFlapSrc = isSample ? '/upper-flap-sample.png' : '/upper flap.png';
-  const lowerFlapSrc = isSample ? '/lower-flap-sample.png' : '/lower flap.png';
-  const stampSrc = isSample ? '/stamp-sample.png' : '/Stamp.png';
-  const glowColorClass = isSample ? 'bg-amber-400/35' : 'bg-emerald-400/30';
-  const footerTextColor = isSample ? 'text-[#b09d7d]' : 'text-[#8eab94]';
-  const cardImageSrc = isSample
-    ? '/sample-card.jpg'
-    : isSingle
-    ? '/single-card.jpg'
-    : '/Final 1.jpg';
-  const buttonClass = isSample
-    ? 'glass-btn-navy text-[#fbeec1]'
-    : 'glass-btn text-white';
+  if (currentPath === '/single' || currentPath === '/single/') {
+    return <PublicInvitationView eventId="sample-event-demo" onGoHome={() => navigateTo('/')} />;
+  }
 
-  const handleOpenEnvelope = () => {
-    setStep('revealed');
-  };
-
-  const handleConfirmPresence = () => {
-    setStep('form');
-  };
-
-  const handleFormSuccess = () => {
-    setStep('thank_you');
-  };
-
-  const handleReset = () => {
-    setStep('revealed');
-  };
-
-  const isEnvelopeRevealed = step !== 'closed';
-
-  return (
-    <MobileFrame>
-      {/* Background container with seamless floral texture */}
-      <div className={`relative w-full h-full flex flex-col overflow-hidden ${bgColor}`}>
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-90 pointer-events-none"
-          style={{ backgroundImage: `url("${bgImageSrc}")` }}
+  // Route: Dedicated Event Live Dashboard (/dashboard/event/:eventId or legacy /admin)
+  if (currentPath.startsWith('/dashboard/event/')) {
+    const eventId = currentPath.replace('/dashboard/event/', '').replace(/\/$/, '');
+    return (
+      <div className="min-h-screen bg-[#fafaf9]">
+        <Navbar
+          user={user}
+          onOpenAuth={() => setIsAuthOpen(true)}
+          onSignOut={handleSignOut}
+          onNavigate={navigateTo}
+          currentPath={currentPath}
         />
-
-        {/* Subtle radial dark overlay for depth */}
-        <div className="absolute inset-0 bg-radial from-transparent via-black/20 to-black/60 pointer-events-none" />
-
-        {/* Envelope Top and Bottom Flaps */}
-        <EnvelopeFlaps
-          isRevealed={isEnvelopeRevealed}
-          onOpen={handleOpenEnvelope}
-          upperFlapSrc={upperFlapSrc}
-          lowerFlapSrc={lowerFlapSrc}
-          stampSrc={stampSrc}
-          glowColorClass={glowColorClass}
-          footerTextColor={footerTextColor}
-        />
-
-        {/* Main Content Area */}
-        <div className="relative w-full h-full flex flex-col z-20">
-          <AnimatePresence mode="wait">
-            {step === 'revealed' && (
-              <InvitationCard
-                key={`invitation-card-${isSample ? 'sample' : isSingle ? 'single' : 'standard'}`}
-                cardImageSrc={cardImageSrc}
-                buttonClass={buttonClass}
-                footerTextColor={footerTextColor}
-                onConfirmPresence={handleConfirmPresence}
-              />
-            )}
-
-            {step === 'form' && (
-              <RSVPForm
-                key={`rsvp-form-${isSample ? 'sample' : isSingle ? 'single' : 'standard'}`}
-                isSingle={isSingle}
-                onSuccess={handleFormSuccess}
-                onBack={() => setStep('revealed')}
-              />
-            )}
-
-            {step === 'thank_you' && (
-              <ThankYouCard
-                key="thank-you-card"
-                onReset={handleReset}
-              />
-            )}
-          </AnimatePresence>
-        </div>
+        <EventDashboard eventId={eventId} onNavigate={navigateTo} />
       </div>
-    </MobileFrame>
+    );
+  }
+
+  if (currentPath === '/admin' || currentPath === '/admin/') {
+    return (
+      <div className="min-h-screen bg-[#fafaf9]">
+        <Navbar
+          user={user}
+          onOpenAuth={() => setIsAuthOpen(true)}
+          onSignOut={handleSignOut}
+          onNavigate={navigateTo}
+          currentPath={currentPath}
+        />
+        <EventDashboard eventId="sample-event-demo" onNavigate={navigateTo} />
+      </div>
+    );
+  }
+
+  // Route: Event Creation Wizard (/create or /create-event)
+  if (currentPath === '/create' || currentPath === '/create/' || currentPath === '/create-event') {
+    return (
+      <div className="min-h-screen bg-[#fafaf9]">
+        <Navbar
+          user={user}
+          onOpenAuth={() => setIsAuthOpen(true)}
+          onSignOut={handleSignOut}
+          onNavigate={navigateTo}
+          currentPath={currentPath}
+        />
+        <EventCreationWizard
+          user={user}
+          onNavigate={navigateTo}
+          onOpenAuth={() => setIsAuthOpen(true)}
+        />
+        <AuthModal
+          isOpen={isAuthOpen}
+          onClose={() => setIsAuthOpen(false)}
+          onSuccess={(loggedUser) => setUser(loggedUser)}
+        />
+      </div>
+    );
+  }
+
+  // Route: User Dashboard Space (/dashboard)
+  if (currentPath.startsWith('/dashboard')) {
+    return (
+      <div className="min-h-screen bg-[#fafaf9]">
+        <Navbar
+          user={user}
+          onOpenAuth={() => setIsAuthOpen(true)}
+          onSignOut={handleSignOut}
+          onNavigate={navigateTo}
+          currentPath={currentPath}
+        />
+        <DashboardView
+          user={user}
+          onNavigate={navigateTo}
+          onOpenAuth={() => setIsAuthOpen(true)}
+        />
+        <AuthModal
+          isOpen={isAuthOpen}
+          onClose={() => setIsAuthOpen(false)}
+          onSuccess={(loggedUser) => setUser(loggedUser)}
+        />
+      </div>
+    );
+  }
+
+  // Default Route: Landing Page (/)
+  return (
+    <div className="min-h-screen bg-[#fafaf9]">
+      <Navbar
+        user={user}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        onSignOut={handleSignOut}
+        onNavigate={navigateTo}
+        currentPath={currentPath}
+      />
+      <LandingPage
+        onStartCreation={() => navigateTo('/create')}
+        onOpenDemoCard={() => navigateTo('/e/sample-event-demo')}
+        onOpenAuth={() => setIsAuthOpen(true)}
+      />
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onSuccess={(loggedUser) => setUser(loggedUser)}
+      />
+    </div>
   );
 }
 

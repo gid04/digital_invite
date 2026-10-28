@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useMutation } from 'convex/react';
-import { api } from '../../convex/_generated/api';
 import { Check, Loader2 } from 'lucide-react';
+import { createRSVP } from '../lib/supabase';
 
 interface RSVPFormProps {
+  eventId?: string;
   onSuccess: () => void;
   onBack?: () => void;
   isSingle?: boolean;
 }
 
-export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack, isSingle = false }) => {
+export const RSVPForm: React.FC<RSVPFormProps> = ({
+  eventId,
+  onSuccess,
+  onBack,
+  isSingle = false,
+}) => {
   const [civility, setCivility] = useState<'M' | 'Mme'>('M');
   const [nom, setNom] = useState('');
   const [prenoms, setPrenoms] = useState('');
   const [withPlusOne, setWithPlusOne] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-
-  const createInvitee = useMutation(api.invitees.createInvitee);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,11 +38,12 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack, isSingle 
     setIsSubmitting(true);
 
     try {
-      await createInvitee({
+      await createRSVP({
+        event_id: eventId || 'sample-event-demo',
         civility,
         nom: nom.trim().toUpperCase(),
         prenoms: prenoms.trim(),
-        withPlusOne: isSingle ? false : withPlusOne,
+        with_plus_one: isSingle ? false : withPlusOne,
       });
 
       setIsSubmitting(false);
@@ -61,15 +65,16 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack, isSingle 
     >
       {/* RSVP Card Container */}
       <div className="w-full max-w-[340px] bg-[#ebe3d5] rounded-[28px] p-6 pt-5 shadow-card border border-[#dfd4c0]/50 relative z-30 flex-shrink-0">
-        {/* Title: Départ à la Retraite in emerald green */}
+        {/* Title */}
         <div className="w-full flex justify-center mb-4">
           <div className="w-56 max-w-[80%] flex justify-center">
             <img
               src="/Title.png"
-              alt="Départ à la Retraite"
+              alt="Confirmation de Présence"
               className="w-full h-auto object-contain"
               style={{
-                filter: 'brightness(0) saturate(100%) invert(20%) sepia(85%) saturate(1200%) hue-rotate(95deg) brightness(85%) contrast(100%)',
+                filter:
+                  'brightness(0) saturate(100%) invert(20%) sepia(85%) saturate(1200%) hue-rotate(95deg) brightness(85%) contrast(100%)',
               }}
             />
           </div>
@@ -105,11 +110,11 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack, isSingle 
 
           {/* Nom Field */}
           <div>
-            <label className="block text-black text-xs font-bold mb-1" htmlFor="nom">
+            <label className="block text-black text-xs font-bold mb-1" htmlFor="rsvp-nom">
               Nom:
             </label>
             <input
-              id="nom"
+              id="rsvp-nom"
               type="text"
               required
               value={nom}
@@ -121,16 +126,16 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack, isSingle 
 
           {/* Prénoms Field */}
           <div>
-            <label className="block text-black text-xs font-bold mb-1" htmlFor="prenoms">
-              Prenoms:
+            <label className="block text-black text-xs font-bold mb-1" htmlFor="rsvp-prenoms">
+              Prénoms:
             </label>
             <input
-              id="prenoms"
+              id="rsvp-prenoms"
               type="text"
               required
               value={prenoms}
               onChange={(e) => setPrenoms(e.target.value)}
-              placeholder="Vos prenoms"
+              placeholder="Vos prénoms"
               className="w-full py-2 px-3.5 rounded-xl bg-[#e3d8c8] text-zinc-900 placeholder:text-zinc-500/80 border border-[#0e4b20]/70 focus:outline-none focus:ring-2 focus:ring-[#0e4b20] text-sm font-medium transition-all"
             />
           </div>
@@ -152,7 +157,7 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack, isSingle 
                   {withPlusOne && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
                 </div>
                 <span className="text-black text-xs sm:text-sm font-medium">
-                  Je viens avec M/Mme
+                  Je viens avec M/Mme (+1)
                 </span>
               </label>
             </div>
@@ -199,7 +204,7 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ onSuccess, onBack, isSingle 
 
       {/* Footer */}
       <p className="text-[11px] text-[#8eab94] font-light tracking-[0.2em] uppercase mt-3 select-none z-30">
-        by VANTAR STUDIOS
+        DIGITINVITE.COM
       </p>
     </motion.div>
   );
